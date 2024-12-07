@@ -1,0 +1,42 @@
+<Component name="Fruits" var.fruits="{['apple', 'orange', 'banana']}">
+
+  <H1>Fruits</H1>
+
+  <Markdown>
+ <![CDATA[
+    This component uses an HStack that wraps a TextBox (for input) and a Button.
+    Without the HStack the button would appear below instead of alongside
+    the TextBox.
+
+    I wasn't sure whether/how to pass var.fruits through the layers but guessed
+    I could just transplant it to this component and that worked exactly as expected.
+
+    It also shows the the Button works with var.fruits. When youtype a fruit name 
+    into the TextBox and click the Button, it triggers the (standard JS) unshift method
+    to add the fruit to the beginning of the fruits array, thus dynamically updating
+    the displayed list of fruits, and the (standard JS) setValue('') method 
+    to clear the input field for the next entry.
+
+    The Button is enabled when fruitName, a variable that corresponds to the id of the
+    TextBox, is non-empty.
+
+    Again this description is *much* longer that the wonderfully simple code.
+
+    Why is the background is blue when the Main markdown has a white background?
+    ]]>
+    </Markdown>
+
+  <HStack verticalAlignment="center">
+    <TextBox id="fruitName" placeholder="Type a fruit name" width="*" />
+    <Button
+      enabled="{fruitName.value.trim()}"
+      onClick="fruits.unshift(fruitName.value); fruitName.setValue('')"
+      label="Add fruit" />
+  </HStack>
+
+  <H3>My favorite fruits:</H3>
+  <List items="{fruits}" height="140">
+    <Text variant="strong">{$item}</Text>
+  </List>
+
+</Component>

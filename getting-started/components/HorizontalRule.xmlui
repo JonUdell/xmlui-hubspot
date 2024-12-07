@@ -1,0 +1,9 @@
+<Component name="HorizontalRule">
+
+  <Markdown>
+    <![CDATA[
+---    
+    ]]>
+  </Markdown>
+
+</Component>

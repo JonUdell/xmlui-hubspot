@@ -1,0 +1,53 @@
+<App layout="vertical" >
+
+  <Text>
+    I'm building out this app to combine the concepts learned in Getting Started.
+</Text>
+
+  <Markdown>
+ <![CDATA[
+![NOTE]
+> Nope, not supported
+
+I don't want the above notice anywhere but the home page, but it shows up everywhere,
+is there a way to scope it to the home page?
+
+This was also a test to see if the Markdown >[!NOTE|CAUTION|etc] syntax is supported,
+guess not, would be a nice touch! It's in GH Markdown, and Turbot's renderer also supports it.
+    ]]>
+  </Markdown>
+
+  <Image src="resources/note.png" />
+
+  <Text>
+  It took 5 lines of markdown to make the vertical rule below. There could be a native
+  component for that, but I just wrapped in &lt;HorizontalRule>. Now it's a one liner.
+  Sweet! I used my HTML reflexes to open the tag written here with &amp;lt;.
+  </Text>
+
+  <HorizontalRule/>
+
+
+  <NavPanel>
+    <NavLink to="/">
+      Home
+    </NavLink>
+    <NavLink to="/astronauts">
+      Astronauts
+    </NavLink>
+    <NavLink to="/fruits">
+      Fruits
+    </NavLink>
+  </NavPanel>
+
+  <Pages>
+    <Page url="/astronauts">
+      <Astronauts />
+    </Page>
+    <Page url="/fruits">
+      <Fruits />
+    </Page>
+  </Pages>
+
+
+</App>

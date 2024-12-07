@@ -1,0 +1,114 @@
+<App
+  layout="vertical-sticky"
+  name="HN">
+  <AppHeader>
+    <H2>Hacker News</H2>
+    <SpaceFiller />
+    <ToneChangerButton />
+  </AppHeader>
+  <NavPanel>
+    <NavLink label="Home" to="/" />
+    <NavLink label="Posts" to="/posts" />
+    <NavLink label="Search" to="/search" />
+  </NavPanel>
+
+  <DataSource
+    id="posts"
+    url="http://localhost:3000/api/turbot-proxy"
+    method="post"
+    queryParams="sql=select * from hn"
+  />
+
+  <!-- 
+  I am running through a CORS proxy because the endpoint doesn't support CORS. I tried using
+  body and rawBody to pass the query, couldn't seem to get that to work. I wound up using queryParams
+  and, in the proxy, doing this:
+
+    const body = Object.values(req.query).join('');
+  -->
+
+  <Pages>
+    <Page url="/">
+      Home
+    </Page>
+
+    <Page url="/posts">
+
+      <!-- I can use this expression to get the length directly. -->
+      <Text>{posts.value.items.length}</Text>
+
+      <!-- Or I can do it indirectly via a code-behind function. -->
+
+      <Text>{countItems(posts.value.items)}</Text>
+
+      <Table data="{posts.value.items}">
+        <Column bindTo="title" />
+        <Column bindTo="time" canSort="true" />
+        <Column bindTo="by" />
+        <Column bindTo="url" />
+
+        <!-- 
+        I would like to make this link clickable but have not found a way.
+        Tried NavLink but seems not to work in Table         
+        -->
+
+        <NavLink to="https://foo.bar">
+          <Column bindTo="url" />
+        </NavLink>
+
+        <!--
+        I also wanted to wrap long URLs and did not find a way. HStack with the wrapContent
+        property also doesn't seem to work in Table.
+        -->
+
+      </Table>
+
+      <!-- 
+
+      I thought of using Markdown, e.g.
+      
+      <Markdown>{showItems(posts.value.items)}</Markdown> 
+
+      which yields something like:
+
+      | Title | Time | By | URL |
+      | ----- | ---- | -- | --- |
+      | Wacky Car Museum | undefined | udit99 | https://twitter.com/anandmahindra/status/1850005999811174634 |
+      | Why the Web Sucks (You Just Don't Know It) | undefined | xk3 | http://nothings.org/writing/websucks.html |  
+
+      But it seems the markdown component doesn't like tables.
+
+      I also thought of using pure HTML, which is also possible in many markdown renderers, but 
+      no luck.
+
+      -->
+
+    </Page>
+
+    <Page url="search">
+
+    <!-- 
+    The idea here was to interpolate the search term into the queryParams of a DataSource, 
+    to replicate the search page of the reference app.
+    
+    I didn't find a way to do that.
+    -->
+
+      <HStack width="200px">
+        <Form
+          onSubmit="(term) => echo(term)">
+          <FormItem label="Search term" bindTo="searchTerm" />
+        </Form>
+      </HStack>
+
+      <!-- How to reference the value in another component? -->
+
+      <Text>Term: {term}</Text>
+
+    </Page>
+  </Pages>
+
+  <Footer>
+    Powered by XMLUI and Turbot Pipes
+  </Footer>
+</App>

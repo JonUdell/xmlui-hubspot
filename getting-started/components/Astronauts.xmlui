@@ -1,0 +1,16 @@
+<Component name="Astronauts">
+
+  <H1>Astronauts</H1>
+
+  <Text>
+    I absolutely love the simplicity of making/using components. This one wraps a List 
+    with a data prop that fetches from https://api.spacexdata.com/v3/history and nested
+    Card that displays once per fetched astronaut. The code is smaller than this comment.
+    Beautiful!
+  </Text>
+
+  <List limit="4" data="https://api.spacexdata.com/v3/history">
+    <Card title="{$item.title}" subtitle="{$item.details}" />
+  </List>
+
+</Component>
