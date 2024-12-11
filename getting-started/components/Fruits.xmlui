@@ -3,28 +3,32 @@
   <H1>Fruits</H1>
 
   <Markdown>
- <![CDATA[
-    This component uses an HStack that wraps a TextBox (for input) and a Button.
-    Without the HStack the button would appear below instead of alongside
+    <![CDATA[
+  > 1 I wasn't sure whether/how to pass `var.fruits` through the layers but guessed I could just transplant it to this component and that worked exactly as expected.
+  ]]>
+  </Markdown>
+
+  <Markdown>
+    <![CDATA[
+  > 2 Looks like I can style `var.fruits` in Markdown but not Text. Maybe a good idea to not have two differing text styling regimes. But if were to switch the below user-visible text to markdown for styling, there's more overhead for the doc writer. Not only the CDATA wrapper which can maybe happen automatically, but also the fiddly markdown blockquote syntax. If you look under the covers at what is here, it's lot of overhead. So I'm choosing between Text which is easy to write but can't be styled, and Markdown which is less easy to write but can be styled (albeit in fiddly ways). This reminds me that if feasible, an HTML component would be great to have, in a Shadow DOM with its own isolated style?
+  ]]>
+    </Markdown>
+
+
+  
+ <Text>
+    An HStack  wraps a TextBox (for input) and a Button.
+    Without the HStack the Button would appear below instead of alongside
     the TextBox.
-
-    I wasn't sure whether/how to pass var.fruits through the layers but guessed
-    I could just transplant it to this component and that worked exactly as expected.
-
-    It also shows the the Button works with var.fruits. When youtype a fruit name 
+    
+    The Button works with `var.fruits`. When you type a fruit name 
     into the TextBox and click the Button, it triggers the (standard JS) unshift method
     to add the fruit to the beginning of the fruits array, thus dynamically updating
-    the displayed list of fruits, and the (standard JS) setValue('') method 
+    the displayed list of fruits, and the (standard JS) `setValue('')` method 
     to clear the input field for the next entry.
 
-    The Button is enabled when fruitName, a variable that corresponds to the id of the
-    TextBox, is non-empty.
-
     Again this description is *much* longer that the wonderfully simple code.
-
-    Why is the background is blue when the Main markdown has a white background?
-    ]]>
-    </Markdown>
+  </Text>
 
   <HStack verticalAlignment="center">
     <TextBox id="fruitName" placeholder="Type a fruit name" width="*" />
