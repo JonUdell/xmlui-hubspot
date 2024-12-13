@@ -1,0 +1,73 @@
+<App layout="vertical" >
+
+  <Text>
+    I'm building out this app to combine the concepts learned in Getting Started.
+</Text>
+  <Markdown>
+ <![CDATA[
+>1 ![NOTE]
+>
+> This was also a test to see if the Markdown [!NOTE|CAUTION|etc] syntax is supported, guess not, would be a nice touch! It's in GH Markdown, and other renderers also supports it. The rendering typically looks like this.
+  ]]>
+  </Markdown>
+
+  <Image src="resources/note.png" />
+
+  <Markdown>
+ <![CDATA[
+>2 This intro material on the home page shows up everywhere. How do I restrict it to the home/main/app page?
+  ]]>
+  </Markdown>
+
+   <Markdown>
+ <![CDATA[
+  > 3 It's really annoying to always type the cdata wrapper. Could it just happen automatically in a <Markdown>?
+  ]]>
+  </Markdown>
+
+ <Markdown>
+ <![CDATA[
+  >4 It took 5 lines of markdown to make the vertical rule below. There could be a native component for that, but I just wrapped in &lt;HorizontalRule>. Now it's a one liner. Sweet! I used my HTML reflexes to open the tag written here with &amp;lt;.
+  ]]>
+  </Markdown>
+
+   <Markdown background="white">
+ <![CDATA[
+  >5 I want to activate view source (inspect) on all components. `inspect="true"` seems not to be the way. If I inspect the <HorizontalRule> below, I would as below. But without the blue background, I want this annotation layer to be consistently white. The blue is associated with triple-backtic evidently. Where is it defined? Can I change it? Not, evidently by using `<Markdown background="white">`on the enclosing Markdown. Minor, but I also can't seem to create vertical whitespace between this blockquote and the blockquoted triple backtic section below, without de-blockquoting the triple backtic section. 
+  > 
+  >```
+  > <Component name="HorizontalRule">
+  >   <Markdown> 
+  >   --- (cdata wrapper omitted for simplicity
+  >   </Markdown>
+  > </Component>
+  >```
+  ]]>
+  </Markdown>
+  
+  <HorizontalRule inspect="true"/>
+
+
+  <NavPanel>
+    <NavLink to="/">
+      Home
+    </NavLink>
+    <NavLink to="/astronauts">
+      Astronauts
+    </NavLink>
+    <NavLink to="/fruits">
+      Fruits
+    </NavLink>
+  </NavPanel>
+
+  <Pages inspect="true">
+    <Page url="/astronauts">
+      <Astronauts />
+    </Page>
+    <Page url="/fruits">
+      <Fruits />
+    </Page>
+  </Pages>
+
+
+</App>
