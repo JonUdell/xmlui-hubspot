@@ -33,6 +33,7 @@
   <HStack verticalAlignment="center">
     <TextBox id="fruitName" placeholder="Type a fruit name" width="*" />
     <Button
+      inspect="true"
       enabled="{fruitName.value.trim()}"
       onClick="fruits.unshift(fruitName.value); fruitName.setValue('')"
       label="Add fruit" />
