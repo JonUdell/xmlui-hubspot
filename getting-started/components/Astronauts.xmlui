@@ -8,7 +8,7 @@
  ]]>
   </Markdown>
 
-  <Markdown>
+  <Markdown inspect="true">
  <![CDATA[
  > 2 This picture annotates the live display below, to illustrate the layers I would like to use consistently throughout.
  ![](resources/annotation-layers-2.png)
@@ -30,7 +30,7 @@
     Beautiful!
   </Text>
  
-  <List limit="4" data="https://api.spacexdata.com/v3/history">
+  <List inspect="true" limit="4" data="https://api.spacexdata.com/v3/history">
     <Card title="{$item.title}" subtitle="{$item.details}" />
   </List>
 
