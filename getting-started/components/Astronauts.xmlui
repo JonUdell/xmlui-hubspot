@@ -21,17 +21,52 @@
  ]]>
   </Markdown>
 
-
+  <H2>List astronauts</H2>
 
   <Text>
-     This component wraps a List  with a data prop that fetches from 
-    https://api.spacexdata.com/v3/history and a nested Card that displays once
+    This component wraps a List  with a data prop that fetches from 
+    https://api.spacexdata.com/v4/crew and a nested Card that displays once
     per fetched astronaut. The code is smaller than this comment.
     Beautiful!
   </Text>
  
-  <List inspect="true" limit="4" data="https://api.spacexdata.com/v3/history">
-    <Card title="{$item.title}" subtitle="{$item.details}" />
+  <List inspect="true" limit="4" data="https://api.spacexdata.com/v4/crew">
+    <Card title="{$item.name}" subtitle="{$item.agency}" />
   </List>
 
+  <H2>Explore the astronauts API</H2>
+
+ <Markdown>
+ <![CDATA[
+ > 1 Here I would like to show how to reveal raw data for an endpoint, e.g. show a raw item, important for debugging.
+ > ```json
+ >    {
+ >        "name": "Robert Behnken",
+ >       "agency": "NASA",
+ >       "image": "https://imgur.com/0smMgMH.png",
+ >       "wikipedia": "https://en.wikipedia.org/wiki/Robert_L._Behnken",
+ >       "launches": [
+ >           "5eb87d46ffd86e000604b388"
+ >       ],
+ >       "status": "active",
+ >       "id": "5ebf1a6e23a9a60006e03a7a"
+ >   }
+ > ```
+ > How would I do that?
+ >]]>
+  </Markdown>
+
+   <Markdown>
+ <![CDATA[
+ > 2 The above markdown includes:
+ >
+ > ```json
+ > ...
+ > ```
+ >
+ > expecting syntax coloring, not happening, arguably not critical for a biz app dev, but nice to have if just a config option on the renderer.
+ >]]>
+  </Markdown>
+
+  
 </Component>
