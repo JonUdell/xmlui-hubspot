@@ -15,7 +15,7 @@
   <Pages inspect="true">
     <Page url="/">
       <Text>
-        This apps combine the concepts explained in Getting Started.
+        This app is a live exploration of concepts from Getting Started.
       </Text>
     </Page>
     <Page url="/astronauts">
