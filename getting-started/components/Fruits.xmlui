@@ -31,7 +31,7 @@
   </Text>
 
   <HStack verticalAlignment="center">
-    <TextBox id="fruitName" placeholder="Type a fruit name" width="*" />
+    <TextBox inspect="true" id="fruitName" placeholder="Type a fruit name" width="*" />
     <Button
       inspect="true"
       enabled="{fruitName.value.trim()}"
