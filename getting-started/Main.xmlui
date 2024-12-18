@@ -1,4 +1,4 @@
-<App layout="vertical" >
+<App layout="vertical">
 
   <NavPanel>
     <NavLink to="/">
@@ -10,6 +10,11 @@
     <NavLink to="/fruits">
       Fruits
     </NavLink>
+    <Stack width="50%" horizontalAlignment="center">
+      <NavLink to="/fruits2">
+        Fruits2
+      </NavLink>
+    </Stack>
   </NavPanel>
 
   <Pages inspect="true">
@@ -24,7 +29,10 @@
     <Page url="/fruits">
       <Fruits />
     </Page>
-  </Pages>
+    <Page url="/fruits2">
+      <Fruits2 />
+    </Page>
 
+  </Pages>
 
 </App>

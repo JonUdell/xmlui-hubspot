@@ -40,7 +40,7 @@
   </HStack>
 
   <H3>My favorite fruits:</H3>
-  <List items="{fruits}" height="140">
+  <List inspect="true" items="{fruits}" height="140">
     <Text variant="strong">{$item}</Text>
   </List>
 
