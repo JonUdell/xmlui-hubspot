@@ -1,0 +1,12 @@
+<App layout="vertical">
+
+   <Text>
+   testing sqlite integration
+   </Text>
+
+  <DataSource id="books" url="http://Localhost:8080/query" body='{"sql": "SELECT * FROM books", "params": []}' method="POST"/>
+  <List data="{books}">
+    <Card title="{$item.title}" subtitle="{$item.author}" />
+  </List>
+
+</App>  
