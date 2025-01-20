@@ -1,61 +1,28 @@
 <App layout="vertical">
 
-<Text>
-   Testing sqlite integration
- </Text>
+  <H1>Testing sqlite integration </H1>
 
+  <HStack>
 
-<!--
-<Text>
-   value={ sql() } 
- </Text>
+    <CVStack>
+      <TextBox id="newTitle" placeholder="Enter a book title" width="80%" />
+      <TextBox id="newAuthor" placeholder="Enter the author" width="80%" />
+      <Button label="Add book">
+        <event name="click">
+          <APICall method="POST" url="http://hn.jonudell.info:8080/query" rawBody=` { sql2( newTitle.value, newAuthor.value ) } `  />
+        </event>
+      </Button>
+    </CVStack>
 
-<Text>
-   value={ sql2('Dune', 'Frank Herbert') } 
-</Text>
- -->
+    <DataSource id="books" url="http://hn.jonudell.info:8080/query" body='{{"sql":"SELECT * FROM books"}}' method="POST"/>
 
-  
-<CHStack>
-  <DataSource id="books" url="http://hn.jonudell.info:8080/query" body='{{"sql":"SELECT * FROM books"}}' method="POST"/>
-  <List data="{books}" width="30%">
-    <Card title="{$item.title}" subtitle="{$item.author}" />
-  </List>
+    <List data="{books}" width="30%">
+      <Card title="{$item.title}" subtitle="{$item.author}" />
+    </List>
 
-  
-<!--
+  </HStack>
 
-<Button label="Add Literal">
-    <event name="click">
-        <APICall
-            method="POST"
-            url="http://hn.jonudell.info:8080/query"
-            rawBody=` { sql2('Dune', 'Frank Herbert') } `
-        />
-    </event>
-</Button>
-
-  <ContentSeparator orientation="horizontal" size="2px" width="50%"/>
-
--->
-
-<VStack>
-<TextBox id="newTitle" placeholder="Enter a book title" width="80%" />
-<TextBox id="newAuthor" placeholder="Enter the author" width="80%" />
-<Button label="Add book">
-    <event name="click">
-        <APICall
-            method="POST"
-            url="http://hn.jonudell.info:8080/query"
-            rawBody=` { sql2( newTitle.value, newAuthor.value ) } `
-        />
-    </event>
-</Button>
-</VStack>
-
-</CHStack>
-
-</App>  
+  </App>  
 
 
 
