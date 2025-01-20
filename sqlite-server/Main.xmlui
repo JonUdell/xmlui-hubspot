@@ -1,12 +1,57 @@
 <App layout="vertical">
 
-   <Text>
-   testing sqlite integration
-   </Text>
 
-  <DataSource id="books" url="http://Localhost:8080/query" body='{"sql": "SELECT * FROM books", "params": []}' method="POST"/>
+<!--
+<Text>
+   value={ sql() } 
+ </Text>
+
+<Text>
+   value={ sql2('Dune', 'Frank Herbert') } 
+</Text>
+ -->
+
+  <ContentSeparator orientation="horizontal" size="2px" width="50%"/>
+
+  <DataSource id="books" url="http://hn.jonudell.info:8080/query" body='{{"sql":"SELECT * FROM books"}}' method="POST"/>
   <List data="{books}">
     <Card title="{$item.title}" subtitle="{$item.author}" />
   </List>
 
+  <ContentSeparator orientation="horizontal" size="2px" width="50%"/>
+
+<!--
+
+<Button label="Add Literal">
+    <event name="click">
+        <APICall
+            method="POST"
+            url="http://hn.jonudell.info:8080/query"
+            rawBody=` { sql2('Dune', 'Frank Herbert') } `
+        />
+    </event>
+</Button>
+
+  <ContentSeparator orientation="horizontal" size="2px" width="50%"/>
+
+-->
+
+<TextBox id="newTitle" placeholder="Enter a book title" width="50%" />
+<TextBox id="newAuthor" placeholder="Enter the author" width="50%" />
+<Button label="Add Parameterized">
+    <event name="click">
+        <APICall
+            method="POST"
+            url="http://hn.jonudell.info:8080/query"
+            rawBody=` { sql2( newTitle.value, newAuthor.value ) } `
+        />
+    </event>
+</Button>
+
 </App>  
+
+
+
+
+
+
