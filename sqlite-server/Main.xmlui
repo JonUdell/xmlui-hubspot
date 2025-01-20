@@ -11,15 +11,14 @@
 </Text>
  -->
 
-  <ContentSeparator orientation="horizontal" size="2px" width="50%"/>
-
+  
+<CHStack>
   <DataSource id="books" url="http://hn.jonudell.info:8080/query" body='{{"sql":"SELECT * FROM books"}}' method="POST"/>
-  <List data="{books}">
+  <List data="{books}" width="20%">
     <Card title="{$item.title}" subtitle="{$item.author}" />
   </List>
 
-  <ContentSeparator orientation="horizontal" size="2px" width="50%"/>
-
+  
 <!--
 
 <Button label="Add Literal">
@@ -36,9 +35,10 @@
 
 -->
 
-<TextBox id="newTitle" placeholder="Enter a book title" width="50%" />
-<TextBox id="newAuthor" placeholder="Enter the author" width="50%" />
-<Button label="Add Parameterized">
+<VStack>
+<TextBox id="newTitle" placeholder="Enter a book title" width="80%" />
+<TextBox id="newAuthor" placeholder="Enter the author" width="80%" />
+<Button label="Add book">
     <event name="click">
         <APICall
             method="POST"
@@ -47,6 +47,9 @@
         />
     </event>
 </Button>
+</VStack>
+
+</CHStack>
 
 </App>  
 
