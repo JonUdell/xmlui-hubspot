@@ -1,8 +1,10 @@
 package main
 
 import (
+    "bytes"
     "database/sql"
     "encoding/json"
+    "io"
     "log"
     "net/http"
     "os"
@@ -36,11 +38,24 @@ func (s *Server) handleQuery(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    var req QueryRequest
-    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
+    // Use io.TeeReader to log the body while still allowing it to be read
+    var bodyBuffer bytes.Buffer
+    teeReader := io.TeeReader(r.Body, &bodyBuffer)
+
+    // Log the body as a string
+    bodyBytes, err := io.ReadAll(teeReader)
+    if err != nil {
+        http.Error(w, "Failed to read request body", http.StatusInternalServerError)
         return
     }
+    log.Printf("Request Body: %s", string(bodyBytes))
+
+    // Decode the body into the QueryRequest struct
+    var req QueryRequest
+    if err := json.NewDecoder(&bodyBuffer).Decode(&req); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }    
 
     rows, err := s.db.Query(req.SQL, req.Params...)
     if err != nil {
