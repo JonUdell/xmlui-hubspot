@@ -1,5 +1,9 @@
 <App layout="vertical">
 
+<Text>
+   Testing sqlite integration
+ </Text>
+
 
 <!--
 <Text>
@@ -14,7 +18,7 @@
   
 <CHStack>
   <DataSource id="books" url="http://hn.jonudell.info:8080/query" body='{{"sql":"SELECT * FROM books"}}' method="POST"/>
-  <List data="{books}" width="20%">
+  <List data="{books}" width="30%">
     <Card title="{$item.title}" subtitle="{$item.author}" />
   </List>
 
