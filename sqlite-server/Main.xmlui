@@ -30,5 +30,19 @@
       <Text>{$item[0].properties.firstname}, {$item[0].properties.lastname}, {$item[0].properties.email} </Text> 
     </Items>
 
+    <Items data="{contacts}" resultSelector="results">
+      <Text>{$item[0].properties.firstname}, {$item[0].properties.lastname}, {$item[0].properties.email} </Text> 
+    </Items>
+
+    <Items data="{contacts}" resultSelector="results">
+      <Text>{$item.properties.firstname}, {$item.properties.lastname}, {$item.properties.email} </Text> 
+    </Items>
+
+    <Items data="{contacts}" resultSelector="results">
+      <Text>{JSON.stringify($item)}</Text>
+      <Text>{JSON.stringify($item[0])}</Text>
+    </Items>
+
+
   </App>  
 
