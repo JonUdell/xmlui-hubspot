@@ -22,10 +22,13 @@
 
   </HStack>
 
+    <H1>Testing CORS proxy </H1>
+
+    <DataSource id="contacts" url="http://hn.jonudell.info:8080/proxy/api.hubapi.com/crm/v3/objects/contacts" headers='{{"Authorization":"Bearer pat-na1-84a1bea4-f3ea-4347-8a0d-7390b394a3bd"}}' method="GET"/>
+
+    <Items data="{contacts}">
+      <Text>{$item[0].properties.firstname}, {$item[0].properties.lastname}, {$item[0].properties.email} </Text> 
+    </Items>
+
   </App>  
-
-
-
-
-
 
