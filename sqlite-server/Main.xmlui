@@ -4,10 +4,15 @@
 
   <Text>Start by uploading the CSV file you received from the scan service.</Text>
 
-  <VStack width="30%">
-    <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
-    <Text>`fileResult: {fileResult}`</Text>
-  </VStack>
+  <HStack>
+    <Stack width="30%">
+      <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
+    </Stack>
+    <Stack width="70%">
+      <Text>{parseCSV(fileResult)}</Text>
+    </Stack>
+  </HStack>
+  
 
   <!--
 
