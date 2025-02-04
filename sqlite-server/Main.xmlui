@@ -37,8 +37,9 @@
     </Stack>
   </HStack>
 
- <DataSource id='contacts' url='http://hn.jonudell.info:8080/cors/https://api.hubapi.com/crm/v3/objects/contacts' headers="{{ 'Authorization': 'Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83' }}" />
-  
+  <DataSource id='contacts' url='http://hn.jonudell.info:8080/cors/https://api.hubapi.com/crm/v3/objects/contacts'
+      headers="{{ 'Authorization': 'pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83' }}" />
+
   <List data='contacts'>
     <property name="itemTemplate">
       <Card>
