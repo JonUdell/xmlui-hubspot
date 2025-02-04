@@ -1,6 +1,10 @@
-<App layout="vertical">
+<App layout="vertical" var.fileResult="">
 
   <H1>Testing sqlite integration </H1>
+
+    <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
+    <Text>{fileResult}</Text>
+
 
   <HStack>
 
@@ -9,12 +13,14 @@
       <TextBox id="newAuthor" placeholder="Enter the author" width="80%" />
       <Button label="Add book">
         <event name="click">
-          <APICall method="POST" url="http://hn.jonudell.info:8080/query" rawBody=` { sql2( newTitle.value, newAuthor.value ) } `  />
+          <APICall method="POST" url="http://hn.jonudell.info:8080/query" rawBody=` { sql2( newTitle.value,
+            newAuthor.value ) } ` />
         </event>
       </Button>
     </CVStack>
 
-    <DataSource id="books" url="http://hn.jonudell.info:8080/query" body='{{"sql":"SELECT * FROM books"}}' method="POST"/>
+    <DataSource id="books" url="http://hn.jonudell.info:8080/query" body='{{"sql":"SELECT * FROM books"}}'
+      method="POST" />
 
     <List data="{books}" width="30%">
       <Card title="{$item.title}" subtitle="{$item.author}" />
@@ -22,27 +28,27 @@
 
   </HStack>
 
-    <H1>Testing CORS proxy </H1>
+  <H1>Testing CORS proxy </H1>
 
-    <DataSource id="contacts" url="http://hn.jonudell.info:8080/proxy/api.hubapi.com/crm/v3/objects/contacts" headers='{{"Authorization":"Bearer pat-na1-84a1bea4-f3ea-4347-8a0d-7390b394a3bd"}}' method="GET"/>
+  <DataSource id="contacts" url="http://hn.jonudell.info:8080/proxy/api.hubapi.com/crm/v3/objects/contacts"
+    headers='{{"Authorization":"Bearer pat-na1-84a1bea4-f3ea-4347-8a0d-7390b394a3bd"}}' method="GET" />
 
-    <Items data="{contacts}">
-      <Text>{$item[0].properties.firstname}, {$item[0].properties.lastname}, {$item[0].properties.email} </Text> 
-    </Items>
+  <Items data="{contacts}">
+    <Text>{$item[0].properties.firstname}, {$item[0].properties.lastname}, {$item[0].properties.email} </Text>
+  </Items>
 
-    <Items data="{contacts}" resultSelector="results">
-      <Text>{$item[0].properties.firstname}, {$item[0].properties.lastname}, {$item[0].properties.email} </Text> 
-    </Items>
+  <Items data="{contacts}" resultSelector="results">
+    <Text>{$item[0].properties.firstname}, {$item[0].properties.lastname}, {$item[0].properties.email} </Text>
+  </Items>
 
-    <Items data="{contacts}" resultSelector="results">
-      <Text>{$item.properties.firstname}, {$item.properties.lastname}, {$item.properties.email} </Text> 
-    </Items>
+  <Items data="{contacts}" resultSelector="results">
+    <Text>{$item.properties.firstname}, {$item.properties.lastname}, {$item.properties.email} </Text>
+  </Items>
 
-    <Items data="{contacts}" resultSelector="results">
-      <Text>{JSON.stringify($item)}</Text>
-      <Text>{JSON.stringify($item[0])}</Text>
-    </Items>
+  <Items data="{contacts}" resultSelector="results">
+    <Text>{JSON.stringify($item)}</Text>
+    <Text>{JSON.stringify($item[0])}</Text>
+  </Items>
 
 
-  </App>  
-
+</App>
