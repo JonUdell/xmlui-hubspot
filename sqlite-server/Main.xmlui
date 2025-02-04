@@ -1,10 +1,15 @@
-<App layout="vertical" var.fileResult="">
+<App layout="vertical" var.fileResult="" var.parsedResult>
 
-  <H1>Testing sqlite integration </H1>
+  <H1>Trade-show scans to HubSpot </H1>
 
+  <Text>Start by uploading the CSV file you received from the scan service.</Text>
+
+  <VStack width="30%">
     <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
-    <Text>{fileResult}</Text>
+    <Text>`fileResult: {fileResult}`</Text>
+  </VStack>
 
+  <!--
 
   <HStack>
 
@@ -50,5 +55,6 @@
     <Text>{JSON.stringify($item[0])}</Text>
   </Items>
 
+-->
 
 </App>
