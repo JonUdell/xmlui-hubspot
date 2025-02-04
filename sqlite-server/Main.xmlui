@@ -4,6 +4,7 @@
 
   <Text>Start by uploading the CSV file you received from the scan service.</Text>
 
+  <!--
   <HStack>
     <Stack width="30%">
       <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
@@ -12,7 +13,39 @@
       <Text>{parseCSV(fileResult)}</Text>
     </Stack>
   </HStack>
+-->
+
+
+  <HStack>
+    <Stack width="30%">
+      <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
+    </Stack>
+    <Stack inspect="true" width="70%">
+      <!--<List data="{parseCSV(fileResult)}" -->
+      <List data="{fakeCSV()}">
+        <property name="itemTemplate">
+          <Card>
+            <VStack gap="0.5rem">
+              <Text variant="strong">{$item.firstname} {$item.lastname}</Text>
+              <Text>Company: {$item.company}</Text>
+              <Text>Email: {$item.email}</Text>
+              <Text>Notes: {$item.notes}</Text>
+            </VStack>
+          </Card>
+        </property>
+      </List>
+    </Stack>
+  </HStack>
+
+ <DataSource id='contacts' url='http://hn.jonudell.info:8080/cors/https://api.hubapi.com/crm/v3/objects/contacts' headers="{{ 'Authorization': 'Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83' }}" />
   
+  <List data='contacts'>
+    <property name="itemTemplate">
+      <Card>
+        <Text value="{$item.company}" variant="strong" />
+      </Card>
+    </property>
+  </List>
 
   <!--
 

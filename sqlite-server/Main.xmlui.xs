@@ -25,5 +25,10 @@ function parseCSV(csvString) {
       });
 
       // Return the parsed JSON (or a string representation)
-      return JSON.stringify(data, null, 2);
+      //return JSON.stringify(data, null, 2);
+      return data
+    }
+
+    function fakeCSV() {
+      return [ { "firstname": "Alice", "lastname": "Johnson", "company": "TechCorp", "email": "alice.johnson@techcorp.com", "notes": "" }, { "firstname": "Bob", "lastname": "Smith", "company": "InnovateX", "email": "bob.smith@innovatex.com", "notes": "" }, { "firstname": "Charlie", "lastname": "Davis", "company": "NextGen Solutions", "email": "charlie.davis@nextgensolutions.com", "notes": "" }, { "firstname": "Dana", "lastname": "White", "company": "FutureSoft", "email": "dana.white@futuresoft.com", "notes": "" }, { "firstname": "Ethan", "lastname": "Moore", "company": "CloudNet", "email": "ethan.moore@cloudnet.com", "notes": "" }, { "firstname": "Fiona", "lastname": "Taylor", "company": "AI Systems", "email": "fiona.taylor@aisystems.com", "notes": "" }, { "firstname": "George", "lastname": "Harris", "company": "QuantumTech", "email": "george.harris@quantumtech.com", "notes": "" }, { "firstname": "Hannah", "lastname": "Clark", "company": "Skyline Ventures", "email": "hannah.clark@skylineventures.com", "notes": "" }, { "firstname": "Ian", "lastname": "Martinez", "company": "BlueOcean Inc", "email": "ian.martinez@blueoceaninc.com", "notes": "" }, { "firstname": "Julia", "lastname": "Brown", "company": "DataForge", "email": "julia.brown@dataforge.com", "notes": "" } ]
     }
