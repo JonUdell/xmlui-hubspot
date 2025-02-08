@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="xmlui/0.7.20.js"></script>
+    <script>
+        function readFile(file) {
+            let reader = new FileReader();
+            reader.readAsText(file);
+            return new Promise((resolve, reject)=>{
+                reader.onload = ()=>{
+                    console.log('readFile:\n ', reader.result)
+                    resolve(reader.result);
+                };
+                reader.onerror = ()=>{
+                    reject(reader.error);
+                };
+            });
+        }
+    </script>    
+</head>
+<body>
+</body>
+</html>
