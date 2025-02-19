@@ -1,6 +1,7 @@
 function transform(response) {
   return response.results
 }
+
 function parseCSV(csvString) {
       if (csvString == '' ) {
         return csvString

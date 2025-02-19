@@ -1,21 +1,12 @@
 <App layout="vertical" var.fileResult="" var.parsedResult>
 
+  <H1>Trade-show scans to HubSpot </H1>
+
+  <Text>Start by uploading the CSV file you received from the scan service.</Text>
+
   <Stack width="30%">
     <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
   </Stack>
-
-
-
-  <!--
-
-    <Items data="{ fileResult ? parseCSV(fileResult) : []  }">
-       <Text>{ fileResult ? $item.firstname : '' } </Text>
-    </Items>
-
-    <Text>
-      { fileResult ? JSON.stringify(parseCSV(fileResult)) : ""  }
-    </Text>
-    -->
 
   <Stack inspect="true" width="50%">
     <List data="{ fileResult ? parseCSV(fileResult) : []  }">
@@ -37,9 +28,6 @@
 
   <!--
 
-  <H1>Trade-show scans to HubSpot </H1>
-
-  <Text>Start by uploading the CSV file you received from the scan service.</Text>
 
   <HStack>
     <Stack width="30%">
@@ -76,20 +64,38 @@
   </HStack>
 -->
 
-  <!--
-<DataSource id="contacts" url="http://hn.jonudell.info:8080/proxy/api.hubapi.com/crm/v3/objects/contacts" headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/> 
+<DataSource 
+  id="contacts" 
+  resultSelector="results.map(item => item.properties )"
+  url="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes"
+  headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/> 
 
-<Items data="{transform(contacts.value)}">
-  <Text>{$item.properties.firstname} </Text> 
-</Items>  
 
-<List data="{transform(contacts.value)}">
-  <property name="itemTemplate">
-    <Card>
-      <Text value="{$item.properties.firstname}" variant="strong" />
-    </Card>
-  </property>
-</List>
--->
+<Table title="HubSpot contacts" data="{contacts}">
+  <Column bindTo="firstname" />
+  <Column bindTo="lastname" />
+  <Column bindTo="company" />
+  <Column bindTo="email" />
+  <Column bindTo="custom_notes" />
+</Table>
 
 </App>
+
+<!--
+
+curl --url "https://api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes" --header "Authorization: Bearer $HUBSPOT_TOKEN" 
+
+curl --request POST \ 
+    --url "https://api.hubapi.com/crm/v3/objects/contacts" \
+    --header "Authorization: $HTOKEN" \
+    --header "Content-Type: application/json" \
+    --data '{
+      "properties": {
+        "firstname": "Alice",
+        "lastname": "Johnson",
+        "company": "TechCorp",
+        "email": "alice.johnson@techcorp.com",
+        "custom_notes": "Sample note for Alice Johnson"
+      }
+    }'
+-->
