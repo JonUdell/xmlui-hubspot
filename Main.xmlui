@@ -1,6 +1,12 @@
-<App layout="vertical" var.fileResult="" var.parsedResult>
+<App
+  layout="vertical"
+  var.fileResult=""
+  var.selection=""
+  >
 
-  <H1>Trade-show scans to HubSpot </H1>
+ <Text>Current selection (rows): [ { selection } ]</Text>
+
+    <H1>Trade-show scans to HubSpot </H1>
 
   <Text>Start by uploading the CSV file you received from the scan service.</Text>
 
@@ -10,20 +16,25 @@
 
   </VStack>
 
-<Table title="HubSpot contacts" data="{ fileResult ? parseCSV(fileResult) : [] }">
-  <Column id="{'fn_' + $rowIndex}" bindTo="firstname" />
+<Table
+    title="HubSpot contacts"
+    data="{ fileResult ? parseCSV(fileResult) : [] }"
+        rowsSelectable="true"
+        onSelectionDidChange="(newSel) => selection = newSel.map(item => JSON.stringify(item)).join()"
+    >
+  <Column bindTo="id" />
+  <Column bindTo="firstname" />
   <Column bindTo="lastname" />
   <Column bindTo="company" />
   <Column bindTo="email" />
-  <Column bindTo="custom_notes" >
-    <TextBox id="{ 'tb_' + $rowIndex }" />
-  </Column>
-  <Column header="Send to HubSpot" >
-    <Checkbox id="{ 'cb_' + $rowIndex }" />
+  <Column header="custom_notes">
+    <TextBox id="{'tb_' + $rowIndex}"/>
   </Column>
 </Table>
 
-<Button onClick="{ sendToHubspot() }" label="submit" />
+
+<Button onClick="{ toast(selection) }" label="submit" />
+
 
 <DataSource
   id="contacts"

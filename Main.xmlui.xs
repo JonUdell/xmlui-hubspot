@@ -1,6 +1,6 @@
 function parseCSV(csvString) {
   if (csvString == '') {
-    return csvString
+    return csvString;
   }
 
   // Simple CSV -> JSON: first line is headers
@@ -13,20 +13,20 @@ function parseCSV(csvString) {
     return "No valid lines";
   }
 
-  const headers = lines[0].split(",").map(h => h.trim());
-  const data = lines.slice(1).map(line => {
+  const headers = ["id", ...lines[0].split(",").map(h => h.trim())];
+
+  const data = lines.slice(1).map((line, index) => {
     const values = line.split(",");
-    const row = {};
-    headers.forEach((header, i) => {
+    const row = { id: index }; // Add the id column
+    headers.slice(1).forEach((header, i) => {
       row[header] = (values[i] || "").trim();
     });
     return row;
   });
 
-  // Return the parsed JSON (or a string representation)
-  //return JSON.stringify(data, null, 2);
-  return data
+  return data;
 }
+
 
 
 function fakeCSV() {
