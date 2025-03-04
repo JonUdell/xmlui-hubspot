@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HubSpot CSV Uploader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 6px;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .upload-section {
+      margin-bottom: 20px;
+    }
+    .contact-form {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+    .contact-form h2 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+    .contact-form p {
+      margin: 0 0 6px;
+    }
+    .contact-form label {
+      display: inline-block;
+      width: 100px;
+      font-weight: bold;
+    }
+    .notes-field {
+      margin: 8px 0;
+    }
+    .notes-field input[type="text"] {
+      width: 70%;
+      padding: 5px;
+    }
+    .checkbox-field {
+      margin: 8px 0;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HubSpot CSV Uploader</h1>
+
+    <!-- CSV Upload -->
+    <div class="upload-section">
+      <label for="csvFile">Select CSV File:</label>
+      <input type="file" id="csvFile" accept=".csv" />
+    </div>
+
+    <!-- Contacts List Will Appear Here -->
+    <div id="contactsContainer"></div>
+
+    <!-- Submit Button -->
+    <button id="submitBtn">Submit Selected Contacts</button>
+
+    <!-- Result Display -->
+    <div id="resultMessage"></div>
+  </div>
+
+  <script>
+    // Placeholder: insert your HubSpot token here
+    const HUBSPOT_TOKEN = "YOUR_NEW_TOKEN";
+
+    const fileInput = document.getElementById("csvFile");
+    const contactsContainer = document.getElementById("contactsContainer");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultMessage = document.getElementById("resultMessage");
+
+    let contactsData = [];
+
+    fileInput.addEventListener("change", function() {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        parseCSV(text);
+        buildForms();
+      };
+      reader.readAsText(file);
+    });
+
+    // Basic CSV parsing by lines and commas
+    function parseCSV(csvText) {
+      contactsData = [];
+      const lines = csvText.trim().split("\n");
+
+      // Assuming first line is the header
+      const headers = lines[0].split(",");
+      const headerMap = {};
+      headers.forEach((h, index) => headerMap[h.trim().toLowerCase()] = index);
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i].split(",");
+        if (row.length >= 4) {
+          const firstname = row[headerMap["firstname"]] || "";
+          const lastname  = row[headerMap["lastname"]] || "";
+          const company   = row[headerMap["company"]] || "";
+          const email     = row[headerMap["email"]] || "";
+          // notes column is row[headerMap["notes"]], but we can ignore
+          contactsData.push({ firstname, lastname, company, email, notes: "" });
+        }
+      }
+    }
+
+    function buildForms() {
+      contactsContainer.innerHTML = "";
+
+      contactsData.forEach((contact, index) => {
+        // Create a wrapper for each contact
+        const contactDiv = document.createElement("div");
+        contactDiv.classList.add("contact-form");
+
+        // Title or heading for contact
+        const heading = document.createElement("h2");
+        heading.textContent = `${contact.firstname} ${contact.lastname}`;
+        contactDiv.appendChild(heading);
+
+        // Company / Email in paragraph
+        const companyP = document.createElement("p");
+        companyP.textContent = `Company: ${contact.company}`;
+        contactDiv.appendChild(companyP);
+
+        const emailP = document.createElement("p");
+        emailP.textContent = `Email: ${contact.email}`;
+        contactDiv.appendChild(emailP);
+
+        // Notes field
+        const notesLabel = document.createElement("label");
+        notesLabel.textContent = "Notes:";
+
+        const notesInput = document.createElement("input");
+        notesInput.type = "text";
+        notesInput.placeholder = "Enter notes here";
+        notesInput.name = "notes_" + index;
+        notesInput.classList.add("notes-input");
+        notesInput.addEventListener("input", function() {
+          contactsData[index].notes = notesInput.value;
+        });
+
+        const notesDiv = document.createElement("div");
+        notesDiv.classList.add("notes-field");
+        notesDiv.appendChild(notesLabel);
+        notesDiv.appendChild(notesInput);
+        contactDiv.appendChild(notesDiv);
+
+        // Checkbox to add to HubSpot
+        const checkboxLabel = document.createElement("label");
+        checkboxLabel.textContent = "Add to HubSpot:";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "hubspot_" + index;
+        checkbox.classList.add("hubspot-checkbox");
+        checkbox.addEventListener("change", function() {
+          contactsData[index].selected = checkbox.checked;
+        });
+
+        const checkboxDiv = document.createElement("div");
+        checkboxDiv.classList.add("checkbox-field");
+        checkboxDiv.appendChild(checkboxLabel);
+        checkboxDiv.appendChild(checkbox);
+        contactDiv.appendChild(checkboxDiv);
+
+        contactsContainer.appendChild(contactDiv);
+      });
+    }
+
+    submitBtn.addEventListener("click", function() {
+      const selectedContacts = contactsData.filter(c => c.selected);
+      if (selectedContacts.length === 0) {
+        showResult("No contacts selected for submission.", true);
+        return;
+      }
+
+      // Submit to HubSpot (one by one or batched)
+      submitContacts(selectedContacts);
+    });
+
+    async function submitContacts(contacts) {
+      let successCount = 0;
+      let errorCount = 0;
+
+      // Example: single API call per contact
+      for (const contact of contacts) {
+        const payload = {
+          properties: {
+            firstname: contact.firstname,
+            lastname: contact.lastname,
+            company: contact.company,
+            email: contact.email,
+            custom_notes: contact.notes
+          }
+        };
+
+        try {
+          const response = await fetch("http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts", {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"    ,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.ok) {
+            successCount++;
+          } else {
+            errorCount++;
+          }
+        } catch (err) {
+          // Network or other error
+          errorCount++;
+        }
+      }
+
+      showResult(`Submitted: ${successCount} success, ${errorCount} error(s).`, errorCount > 0);
+    }
+
+    function showResult(message, isError) {
+      resultMessage.textContent = message;
+      resultMessage.classList.add("result");
+      resultMessage.classList.remove("success", "error");
+      if (isError) {
+        resultMessage.classList.add("error");
+      } else {
+        resultMessage.classList.add("success");
+      }
+    }
+  </script>
+</body>
+</html>
