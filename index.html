@@ -1,25 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="xmlui/0.7.25.js"></script>
+    <script src="xmlui/0.7.29.js"></script>
     <script>
         function readFile(file) {
             let reader = new FileReader();
             reader.readAsText(file);
-            return new Promise((resolve, reject)=>{
-                reader.onload = ()=>{
+            return new Promise((resolve, reject) => {
+                reader.onload = () => {
                     console.log('readFile:\n ', reader.result)
                     resolve(reader.result);
                 };
-                reader.onerror = ()=>{
+                reader.onerror = () => {
                     reject(reader.error);
                 };
             });
         }
-    </script>    
+
+        function getTableData() {
+            console.log('getTableData')
+            const table = document.querySelector('table');
+            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+
+            const rows = table.querySelectorAll('tbody tr[data-index]');
+            const rowData = Array.from(rows).map(row => {
+                const columns = row.querySelectorAll('td');
+                const data = {};
+
+                columns.forEach((td, index) => {
+                    const input = td.querySelector('input, select, textarea'); // Generalize for any input type
+                    if (input) {
+                        if (input.type === "checkbox") {
+                            data[headers[index]] = input.getAttribute('aria-checked') === 'true';
+                        } else {
+                            data[headers[index]] = input.value.trim();
+                        }
+                    } else {
+                        data[headers[index]] = td.textContent.trim();
+                    }
+                });
+
+                return data;
+            });
+
+            return rowData;
+
+        }
+
+        async function sendToHubspot() {
+            console.log('sendToHubspot')
+            const tableData = getTableData()
+            const hubspotToken = 'pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83'
+            const url = "http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts";
+
+            for (const contact of tableData) {
+                if (contact["Send to HubSpot"]) {
+                    const payload = {
+                        properties: {
+                            firstname: contact.firstname,
+                            lastname: contact.lastname,
+                            company: contact.company,
+                            email: contact.email,
+                            custom_notes: contact.custom_notes || ""
+                        }
+                    }
+
+                    try {
+                        const response = await fetch(url, {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${hubspotToken}`,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            console.error(`Error sending contact ${contact.email}:`, await response.text());
+                        } else {
+                            console.log(`Successfully sent contact ${contact.email}`);
+                        }
+                    } catch (error) {
+                        console.error(`Network error for ${contact.email}:`, error);
+                    }
+                }
+            }
+            location.reload()
+        }
+
+
+    </script>
 </head>
+
 <body>
 </body>
+
 </html>

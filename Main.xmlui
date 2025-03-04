@@ -4,74 +4,34 @@
 
   <Text>Start by uploading the CSV file you received from the scan service.</Text>
 
-  <Stack width="30%">
-    <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
-  </Stack>
+  <VStack width="30%">
 
-  <Stack inspect="true" width="50%">
-    <List data="{ fileResult ? parseCSV(fileResult) : []  }">
-      <Card>
-        <VStack gap="0.5rem">
-          <Form>
-            <FormItem>
-              <Text variant="strong">{$item.firstname} {$item.lastname}</Text>
-            </FormItem>
-            <Text>Company: {$item.company}</Text>
-            <Text>Email: {$item.email}</Text>
-            <FormItem bindTo="notes" label="Notes: "></FormItem>
-            <Checkbox labelPosition="end" label="Send to HubSpot" />
-          </Form>
-        </VStack>
-      </Card>
-    </List>
-  </Stack>
+    <FileInput width="30%" inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
 
-  <!--
+  </VStack>
 
+<Table title="HubSpot contacts" data="{ fileResult ? parseCSV(fileResult) : [] }">
+  <Column id="{'fn_' + $rowIndex}" bindTo="firstname" />
+  <Column bindTo="lastname" />
+  <Column bindTo="company" />
+  <Column bindTo="email" />
+  <Column bindTo="custom_notes" >
+    <TextBox id="{ 'tb_' + $rowIndex }" />
+  </Column>
+  <Column header="Send to HubSpot" >
+    <Checkbox id="{ 'cb_' + $rowIndex }" />
+  </Column>
+</Table>
 
-  <HStack>
-    <Stack width="30%">
-      <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
-    </Stack>
-    <Stack width="70%">
-      <Text>{parseCSV(fileResult)}</Text>
-    </Stack>
-  </HStack>
+<Button onClick="{ sendToHubspot() }" label="submit" />
 
-  <HStack>
-    <Stack width="30%">
-      <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
-    </Stack>
-    <Stack inspect="true" width="50%">
-      <List data="{fakeCSV()}">
-
-        <property name="itemTemplate">
-          <Card>
-            <VStack gap="0.5rem">
-              <Form data="{{ }}" onSubmit="(x) => toast.success(JSON.stringify(x))">
-                <FormItem enabled="false" bindTo="name" variant="strong"
-                  initialValue="{$item.firstname} {$item.lastname}" />
-                <FormItem enabled="false" bindTo="company" initialValue="{$item.company}" />
-                <FormItem enabled="false" bindTo="email" initialValue="{$item.email}" />
-                <FormItem bindTo="notes" label="Notes: "></FormItem>
-                <Checkbox labelPosition="end" label="Send to HubSpot" />
-              </Form>
-            </VStack>
-          </Card>
-        </property>
-      </List>
-    </Stack>
-  </HStack>
--->
-
-<DataSource 
-  id="contacts" 
+<DataSource
+  id="contacts"
   resultSelector="results.map(item => item.properties )"
   url="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes"
-  headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/> 
+  headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/>
 
-
-<Table title="HubSpot contacts" data="{contacts}">
+<Table title="HubSpot contacts" data="{ contacts }">
   <Column bindTo="firstname" />
   <Column bindTo="lastname" />
   <Column bindTo="company" />
@@ -79,13 +39,72 @@
   <Column bindTo="custom_notes" />
 </Table>
 
+
 </App>
 
 <!--
 
-curl --url "https://api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes" --header "Authorization: Bearer $HUBSPOT_TOKEN" 
+<Stack inspect="true" width="50%">
+  <List data="{ fileResult ? parseCSV(fileResult) : []  }">
+    <Card>
+      <VStack gap="0.5rem">
+        <Form>
+          <FormItem>
+            <Text variant="strong">{$item.firstname} {$item.lastname}</Text>
+          </FormItem>
+          <Text>Company: {$item.company}</Text>
+          <Text>Email: {$item.email}</Text>
+          <FormItem bindTo="notes" label="Notes: "></FormItem>
+          <Checkbox labelPosition="end" label="Send to HubSpot" />
+        </Form>
+      </VStack>
+    </Card>
+  </List>
+</Stack>
 
-curl --request POST \ 
+<HStack>
+  <Stack width="30%">
+    <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
+  </Stack>
+  <Stack width="70%">
+    <Text>{parseCSV(fileResult)}</Text>
+  </Stack>
+</HStack>
+
+<HStack>
+  <Stack width="30%">
+    <FileInput inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
+  </Stack>
+  <Stack inspect="true" width="50%">
+    <List data="{fakeCSV()}">
+
+      <property name="itemTemplate">
+        <Card>
+          <VStack gap="0.5rem">
+            <Form data="{{ }}" onSubmit="(x) => toast.success(JSON.stringify(x))">
+              <FormItem enabled="false" bindTo="name" variant="strong"
+                initialValue="{$item.firstname} {$item.lastname}" />
+              <FormItem enabled="false" bindTo="company" initialValue="{$item.company}" />
+              <FormItem enabled="false" bindTo="email" initialValue="{$item.email}" />
+              <FormItem bindTo="notes" label="Notes: "></FormItem>
+              <Checkbox labelPosition="end" label="Send to HubSpot" />
+            </Form>
+          </VStack>
+        </Card>
+      </property>
+    </List>
+  </Stack>
+</HStack>
+
+<DataSource
+  id="contacts"
+  resultSelector="results.map(item => item.properties )"
+  url="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes"
+  headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/>
+
+curl --url "https://api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes" --header "Authorization: Bearer $HUBSPOT_TOKEN"
+
+curl --request POST \
     --url "https://api.hubapi.com/crm/v3/objects/contacts" \
     --header "Authorization: $HTOKEN" \
     --header "Content-Type: application/json" \
@@ -99,3 +118,4 @@ curl --request POST \
       }
     }'
 -->
+
