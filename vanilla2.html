@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HubSpot CSV Uploader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 6px;
+      padding: 20px;
+      max-width: 90%;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .upload-section {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #f0f0f0;
+    }
+    .notes-input {
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    .table-container {
+      max-height: 500px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+    .select-all-container {
+      margin-bottom: 10px;
+      padding: 5px;
+      background-color: #f2f2f2;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .file-select-button {
+      background: #f2f2f2;
+      border: 1px solid #ddd;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .file-select-button:hover {
+      background: #e6e6e6;
+    }
+    .hidden {
+      display: none;
+    }
+    .contacts-count {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HubSpot CSV Uploader</h1>
+
+    <!-- CSV Upload -->
+    <div class="upload-section">
+      <label class="file-select-button">
+        <input type="file" id="csvFile" accept=".csv" class="hidden" />
+        Select CSV File
+      </label>
+      <span id="selectedFileName"></span>
+    </div>
+
+    <!-- Contacts Count -->
+    <div id="contactsCount" class="contacts-count"></div>
+
+    <!-- Select All Checkbox -->
+    <div class="select-all-container">
+      <input type="checkbox" id="selectAll" />
+      <label for="selectAll">Select All Contacts</label>
+    </div>
+
+    <!-- Contacts Table -->
+    <div class="table-container">
+      <table id="contactsTable">
+        <thead>
+          <tr>
+            <th width="5%">Select</th>
+            <th width="20%">Name</th>
+            <th width="20%">Company</th>
+            <th width="20%">Email</th>
+            <th width="35%">Notes</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Submit Button -->
+    <button id="submitBtn">Submit Selected Contacts</button>
+
+    <!-- Result Display -->
+    <div id="resultMessage"></div>
+  </div>
+
+  <script>
+    // Placeholder: insert your HubSpot token here
+    const HUBSPOT_TOKEN = "YOUR_NEW_TOKEN";
+
+    const fileInput = document.getElementById("csvFile");
+    const selectedFileName = document.getElementById("selectedFileName");
+    const tableBody = document.getElementById("tableBody");
+    const selectAllCheckbox = document.getElementById("selectAll");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultMessage = document.getElementById("resultMessage");
+    const contactsCount = document.getElementById("contactsCount");
+
+    let contactsData = [];
+
+    fileInput.addEventListener("change", function() {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      selectedFileName.textContent = file.name;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        parseCSV(text);
+        buildTable();
+        updateContactsCount();
+      };
+      reader.readAsText(file);
+    });
+
+    // Basic CSV parsing by lines and commas
+    function parseCSV(csvText) {
+      contactsData = [];
+      const lines = csvText.trim().split("\n");
+
+      // Assuming first line is the header
+      const headers = lines[0].split(",");
+      const headerMap = {};
+      headers.forEach((h, index) => headerMap[h.trim().toLowerCase()] = index);
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i].split(",");
+        if (row.length >= 4) {
+          const firstname = row[headerMap["firstname"]] || "";
+          const lastname  = row[headerMap["lastname"]] || "";
+          const company   = row[headerMap["company"]] || "";
+          const email     = row[headerMap["email"]] || "";
+          contactsData.push({
+            firstname,
+            lastname,
+            company,
+            email,
+            notes: "",
+            selected: false
+          });
+        }
+      }
+    }
+
+    function buildTable() {
+      tableBody.innerHTML = "";
+
+      contactsData.forEach((contact, index) => {
+        const row = document.createElement("tr");
+
+        // Checkbox cell
+        const checkboxCell = document.createElement("td");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.dataset.index = index;
+        checkbox.classList.add("contact-checkbox");
+        checkbox.addEventListener("change", function() {
+          contactsData[index].selected = checkbox.checked;
+          updateSelectAllCheckbox();
+        });
+        checkboxCell.appendChild(checkbox);
+        row.appendChild(checkboxCell);
+
+        // Name cell
+        const nameCell = document.createElement("td");
+        nameCell.textContent = `${contact.firstname} ${contact.lastname}`;
+        row.appendChild(nameCell);
+
+        // Company cell
+        const companyCell = document.createElement("td");
+        companyCell.textContent = contact.company;
+        row.appendChild(companyCell);
+
+        // Email cell
+        const emailCell = document.createElement("td");
+        emailCell.textContent = contact.email;
+        row.appendChild(emailCell);
+
+        // Notes cell
+        const notesCell = document.createElement("td");
+        const notesInput = document.createElement("input");
+        notesInput.type = "text";
+        notesInput.placeholder = "Enter notes here";
+        notesInput.classList.add("notes-input");
+        notesInput.addEventListener("input", function() {
+          contactsData[index].notes = notesInput.value;
+        });
+        notesCell.appendChild(notesInput);
+        row.appendChild(notesCell);
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Function to update the "Select All" checkbox state
+    function updateSelectAllCheckbox() {
+      const checkboxes = document.querySelectorAll(".contact-checkbox");
+      const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+      const someChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+      selectAllCheckbox.checked = allChecked;
+      selectAllCheckbox.indeterminate = someChecked && !allChecked;
+    }
+
+    // Handle "Select All" checkbox
+    selectAllCheckbox.addEventListener("change", function() {
+      const isChecked = selectAllCheckbox.checked;
+
+      // Update all checkboxes in the table
+      const checkboxes = document.querySelectorAll(".contact-checkbox");
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = isChecked;
+        const index = parseInt(checkbox.dataset.index);
+        contactsData[index].selected = isChecked;
+      });
+    });
+
+    // Update contacts count display
+    function updateContactsCount() {
+      contactsCount.textContent = `Loaded ${contactsData.length} contacts`;
+    }
+
+    submitBtn.addEventListener("click", function() {
+      const selectedContacts = contactsData.filter(c => c.selected);
+      if (selectedContacts.length === 0) {
+        showResult("No contacts selected for submission.", true);
+        return;
+      }
+
+      // Submit to HubSpot (one by one or batched)
+      submitContacts(selectedContacts);
+    });
+
+    async function submitContacts(contacts) {
+      let successCount = 0;
+      let errorCount = 0;
+
+      // Example: single API call per contact
+      for (const contact of contacts) {
+        const payload = {
+          properties: {
+            firstname: contact.firstname,
+            lastname: contact.lastname,
+            company: contact.company,
+            email: contact.email,
+            custom_notes: contact.notes
+          }
+        };
+
+        try {
+          const response = await fetch("http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts", {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer pat-n...ca83",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.ok) {
+            successCount++;
+          } else {
+            errorCount++;
+          }
+        } catch (err) {
+          // Network or other error
+          errorCount++;
+        }
+      }
+
+      showResult(`Submitted: ${successCount} success, ${errorCount} error(s).`, errorCount > 0);
+    }
+
+    function showResult(message, isError) {
+      resultMessage.textContent = message;
+      resultMessage.classList.add("result");
+      resultMessage.classList.remove("success", "error");
+      if (isError) {
+        resultMessage.classList.add("error");
+      } else {
+        resultMessage.classList.add("success");
+      }
+    }
+  </script>
+</body>
+</html>
