@@ -4,11 +4,34 @@
   var.selection=""
   >
 
+
+
  <Text>Current selection (rows): [ { selection } ]</Text>
 
     <H1>Trade-show scans to HubSpot </H1>
 
-  <Text>Start by uploading the CSV file you received from the scan service.</Text>
+  <Text>Start by naming the CSV file you got from the scan service.</Text>
+
+<TextBox label="csvUrl" id="csvUrl" width="60%"
+  initialValue=" http://hn.jonudell.info/xmlui-hubspot/scans.csv" />
+
+
+<DataSource id="csv" dataType="csv" url="{csvUrl.value}" />
+
+<Table data="{csv}" rowsSelectable="true">
+  <Column bindTo="key">
+    { $rowIndex }
+  </Column>
+
+  <Column bindTo="firstname" />
+  <Column bindTo="lastname" />
+  <Column bindTo="company" />
+  <Column bindTo="email" />
+  <Column bindTo="custom_notes" />
+</Table>
+
+
+<!--
 
   <VStack width="30%">
 
@@ -28,9 +51,11 @@
   <Column bindTo="company" />
   <Column bindTo="email" />
   <Column header="custom_notes">
-    <TextBox id="{'tb_' + $rowIndex}"/>
+    <TextBox/>
   </Column>
 </Table>
+*/
+-->
 
 
 <Button onClick="{ toast(selection) }" label="submit" />
