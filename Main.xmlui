@@ -1,11 +1,13 @@
 <App
   layout="vertical"
+  theme='xmlui-orange'
   var.selection=""
   var.filename="scans.csv"
-  var.query="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes"
+  var.baseUrl="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts"
+  var.urlProps="?properties=firstname,lastname,email,company,custom_notes"
+  var.headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83", "content-type":"application/json" }}'
+  var.rawBody="initial"
   >
-
-<Text>Current selection (rows): [ { selection } ]</Text>
 
 <H1>Trade-show scans to HubSpot </H1>
 
@@ -23,9 +25,9 @@
   <FileInput initialValue="{filename}" id="fileInput" acceptsFileType="{['.csv']}"
       onDidChange="{ (val) => filename = val[0]?.name; contactsFromCsv.clearSelection() }" />
 
- </Stack>
-
  <Text value="file: {filename}" />
+
+ </Stack>
 
 <Table
     id="contactsFromCsv"
@@ -42,22 +44,37 @@
   <Column header="custom_notes" />
 </Table>
 
-  <ContentSeparator size="8px" />
+<Text>Current selection (rows): [ { selection } ]</Text>
 
-·<!--
+ <Button backgroundColor="lightblue" label="Submit" onClick="updateHubspot()">
+ </Button>
+
  <APICall
-  id="sendToHubspot"
-  method="post"
-  url="/api/shopping-list"
-  errorNotificationMessage="${error.statusCode}, {JSON.stringify($error.details)}" />
--->
+   id="updateTrigger"
+   headers="{headers}"
+   url="{baseUrl + urlProps}"
+   method="POST"
+   rawBody="{rawBody}"
+ />
+
+ <ChangeListener
+   listenTo="{rawBody}"
+   onDidChange="{updateTrigger.execute()}"
+ />
+
+<ContentSeparator size="8px" />
+
+<H2>Contacts in Hubspot</H2>
 
 
 <DataSource
   id="contactsFromHubspot"
   resultSelector="results.map(item => item.properties )"
-  url="{query}"
-  headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/>
+  url="{baseUrl + urlProps}"
+  headers="{headers}"
+ />
+
+ <Text value="rawBody: {rawBody}"/>
 
 <Table title="HubSpot contacts" data="{ contactsFromHubspot }">
   <Column bindTo="firstname" />
@@ -66,7 +83,6 @@
   <Column bindTo="email" />
   <Column bindTo="custom_notes" />
 </Table>
-
 
 </App>
 
