@@ -1,47 +1,34 @@
 <App
   layout="vertical"
-  var.fileResult=""
   var.selection=""
+  var.filename="scans.csv"
+  var.query="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes"
   >
 
+<Text>Current selection (rows): [ { selection } ]</Text>
 
+<H1>Trade-show scans to HubSpot </H1>
 
- <Text>Current selection (rows): [ { selection } ]</Text>
+<Text>Start by naming the CSV file you got from the scan service.</Text>
 
-    <H1>Trade-show scans to HubSpot </H1>
+<DataSource
+  id="csv"
+  dataType="csv"
+  url="{filename}"
+  transformResult="{(data) => data.map((row, index) => ({...row, id: `${index}`}))}"
+/>
 
-  <Text>Start by naming the CSV file you got from the scan service.</Text>
+<Stack width="30%">
 
-<TextBox label="csvUrl" id="csvUrl" width="60%"
-  initialValue=" http://hn.jonudell.info/xmlui-hubspot/scans.csv" />
+  <FileInput initialValue="{filename}" id="fileInput" acceptsFileType="{['.csv']}" onDidChange="{ (val) => filename = val[0]?.name }" />
 
+ </Stack>
 
-<DataSource id="csv" dataType="csv" url="{csvUrl.value}" />
-
-<Table data="{csv}" rowsSelectable="true">
-  <Column bindTo="key">
-    { $rowIndex }
-  </Column>
-
-  <Column bindTo="firstname" />
-  <Column bindTo="lastname" />
-  <Column bindTo="company" />
-  <Column bindTo="email" />
-  <Column bindTo="custom_notes" />
-</Table>
-
-
-<!--
-
-  <VStack width="30%">
-
-    <FileInput width="30%" inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
-
-  </VStack>
+ <Text value="file: {filename}" />
 
 <Table
     title="HubSpot contacts"
-    data="{ fileResult ? parseCSV(fileResult) : [] }"
+    data="{ csv  }"
         rowsSelectable="true"
         onSelectionDidChange="(newSel) => selection = newSel.map(item => JSON.stringify(item)).join()"
     >
@@ -50,21 +37,24 @@
   <Column bindTo="lastname" />
   <Column bindTo="company" />
   <Column bindTo="email" />
-  <Column header="custom_notes">
-    <TextBox/>
-  </Column>
+  <Column header="custom_notes" />
 </Table>
-*/
+
+  <ContentSeparator size="8px" />
+
+·<!--
+ <APICall
+  id="sendToHubspot"
+  method="post"
+  url="/api/shopping-list"
+  errorNotificationMessage="${error.statusCode}, {JSON.stringify($error.details)}" />
 -->
-
-
-<Button onClick="{ toast(selection) }" label="submit" />
 
 
 <DataSource
   id="contacts"
   resultSelector="results.map(item => item.properties )"
-  url="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes"
+  url="{query}"
   headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/>
 
 <Table title="HubSpot contacts" data="{ contacts }">
@@ -154,4 +144,3 @@ curl --request POST \
       }
     }'
 -->
-
