@@ -1,44 +1,88 @@
-<App layout="vertical" var.fileResult="" var.parsedResult>
+<App
+  layout="vertical"
+  theme='xmlui-orange'
+  var.selection=""
+  var.filename="scans.csv"
+  var.baseUrl="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts"
+  var.urlProps="?properties=firstname,lastname,email,company,custom_notes"
+  var.headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83", "content-type":"application/json" }}'
+  var.rawBody="initial"
+  >
 
-  <H1>Trade-show scans to HubSpot </H1>
+<H1>Trade-show scans to HubSpot </H1>
 
-  <Text>Start by uploading the CSV file you received from the scan service.</Text>
+<Text>Start by naming the CSV file you got from the scan service.</Text>
 
-  <VStack width="30%">
+<DataSource
+  id="csv"
+  dataType="csv"
+  url="{filename}"
+  transformResult="{(data) => data.map((row, index) => ({...row, id: `${index}`}))}"
+/>
 
-    <FileInput width="30%" inspect="true" onDidChange="(files) => { fileResult = readFile(files[0]) }" />
+<Stack width="30%">
 
-  </VStack>
+  <FileInput initialValue="{filename}" id="fileInput" acceptsFileType="{['.csv']}"
+      onDidChange="{ (val) => filename = val[0]?.name; contactsFromCsv.clearSelection() }" />
 
-<Table title="HubSpot contacts" data="{ fileResult ? parseCSV(fileResult) : [] }">
-  <Column id="{'fn_' + $rowIndex}" bindTo="firstname" />
+ <Text value="file: {filename}" />
+
+ </Stack>
+
+<Table
+    id="contactsFromCsv"
+    title="HubSpot contacts"
+    data="{ csv  }"
+        rowsSelectable="true"
+        onSelectionDidChange="(newSel) => selection = newSel.map(item => JSON.stringify(item)).join()"
+    >
+  <Column bindTo="id" />
+  <Column bindTo="firstname" />
   <Column bindTo="lastname" />
   <Column bindTo="company" />
   <Column bindTo="email" />
-  <Column bindTo="custom_notes" >
-    <TextBox id="{ 'tb_' + $rowIndex }" />
-  </Column>
-  <Column header="Send to HubSpot" >
-    <Checkbox id="{ 'cb_' + $rowIndex }" />
-  </Column>
+  <Column header="custom_notes" />
 </Table>
 
-<Button onClick="{ sendToHubspot() }" label="submit" />
+<Text>Current selection (rows): [ { selection } ]</Text>
+
+ <Button backgroundColor="lightblue" label="Submit" onClick="updateHubspot()">
+ </Button>
+
+ <APICall
+   id="updateTrigger"
+   headers="{headers}"
+   url="{baseUrl + urlProps}"
+   method="POST"
+   rawBody="{rawBody}"
+ />
+
+ <ChangeListener
+   listenTo="{rawBody}"
+   onDidChange="{updateTrigger.execute()}"
+ />
+
+<ContentSeparator size="8px" />
+
+<H2>Contacts in Hubspot</H2>
+
 
 <DataSource
-  id="contacts"
+  id="contactsFromHubspot"
   resultSelector="results.map(item => item.properties )"
-  url="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts?properties=firstname,lastname,email,company,custom_notes"
-  headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/>
+  url="{baseUrl + urlProps}"
+  headers="{headers}"
+ />
 
-<Table title="HubSpot contacts" data="{ contacts }">
+ <Text value="rawBody: {rawBody}"/>
+
+<Table title="HubSpot contacts" data="{ contactsFromHubspot }">
   <Column bindTo="firstname" />
   <Column bindTo="lastname" />
   <Column bindTo="company" />
   <Column bindTo="email" />
   <Column bindTo="custom_notes" />
 </Table>
-
 
 </App>
 
@@ -118,4 +162,3 @@ curl --request POST \
       }
     }'
 -->
-
