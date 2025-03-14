@@ -20,13 +20,15 @@
 
 <Stack width="30%">
 
-  <FileInput initialValue="{filename}" id="fileInput" acceptsFileType="{['.csv']}" onDidChange="{ (val) => filename = val[0]?.name }" />
+  <FileInput initialValue="{filename}" id="fileInput" acceptsFileType="{['.csv']}"
+      onDidChange="{ (val) => filename = val[0]?.name; contactsFromCsv.clearSelection() }" />
 
  </Stack>
 
  <Text value="file: {filename}" />
 
 <Table
+    id="contactsFromCsv"
     title="HubSpot contacts"
     data="{ csv  }"
         rowsSelectable="true"
@@ -52,12 +54,12 @@
 
 
 <DataSource
-  id="contacts"
+  id="contactsFromHubspot"
   resultSelector="results.map(item => item.properties )"
   url="{query}"
   headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83"}}' method="GET"/>
 
-<Table title="HubSpot contacts" data="{ contacts }">
+<Table title="HubSpot contacts" data="{ contactsFromHubspot }">
   <Column bindTo="firstname" />
   <Column bindTo="lastname" />
   <Column bindTo="company" />
