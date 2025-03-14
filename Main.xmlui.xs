@@ -1,7 +1,6 @@
 function updateHubspot() {
     const parsedSelection = JSON.parse('[' + selection + ']')
     let rawBodyObj = {}
-    let i = 0
     parsedSelection.forEach((item) => {
         rawBodyObj = {
             "properties": {
@@ -17,15 +16,3 @@ function updateHubspot() {
         console.log(rawBody)
     })
 }
-
-/*
-'{
-      "properties": {
-        "firstname": "Alice",
-        "lastname": "Johnson",
-        "company": "TechCorp",
-        "email": "alice.johnson@techcorp.com",
-        "custom_notes": "Sample note for Alice Johnson"
-      }
-    }'
-*/

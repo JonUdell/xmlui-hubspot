@@ -66,7 +66,6 @@
 
 <H2>Contacts in Hubspot</H2>
 
-
 <DataSource
   id="contactsFromHubspot"
   resultSelector="results.map(item => item.properties )"
@@ -83,4 +82,3 @@
 </Table>
 
 </App>
-
