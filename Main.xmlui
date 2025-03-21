@@ -2,69 +2,74 @@
   layout="vertical"
   theme='xmlui-orange'
   var.selection=""
-  var.filename="scans.csv"
+  var.filename=""
   var.baseUrl="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts"
   var.urlProps="?properties=firstname,lastname,email,company,custom_notes"
   var.headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83", "content-type":"application/json" }}'
   var.rawBody="initial"
-  >
+>
 
-<H1>Trade-show scans to HubSpot </H1>
+  <H1>Trade-show scans to HubSpot </H1>
 
-<Text>Start by naming the CSV file you got from the scan service.</Text>
 
-<DataSource
-  id="csv"
-  dataType="csv"
-  url="{filename}"
-  transformResult="{(data) => data.map((row, index) => ({...row, id: `${index}`}))}"
-/>
+  <Text>Start by choosing the CSV file you got from the scan service.</Text>
 
-<Stack width="30%">
+  <Stack width="30%">
 
-  <FileInput initialValue="{filename}" id="fileInput" acceptsFileType="{['.csv']}"
+    <FileInput id="fileInput" acceptsFileType="{['.csv']}"
       onDidChange="{ (val) => filename = val[0]?.name; contactsFromCsv.clearSelection() }" />
 
- <Text value="file: {filename}" />
+    <Text value="file: {filename}" />
 
- </Stack>
+  </Stack>
 
-<Table
-    id="contactsFromCsv"
-    title="HubSpot contacts"
-    data="{ csv  }"
-        rowsSelectable="true"
-        onSelectionDidChange="(newSel) => selection = newSel.map(item => JSON.stringify(item)).join()"
+  <Fragment when="{filename}">
+
+    <DataSource
+      id="csv"
+      dataType="csv"
+      url="{filename}"
+      transformResult="{(data) => data.map((row, index) => ({...row, id: `${index}`}))}"
+    />
+
+    <Table
+      id="contactsFromCsv"
+      title="HubSpot contacts"
+      data="{ csv  }"
+      rowsSelectable="true"
+      onSelectionDidChange="(newSel) => selection = newSel.map(item => JSON.stringify(item)).join()"
     >
-  <Column bindTo="id" />
-  <Column bindTo="firstname" />
-  <Column bindTo="lastname" />
-  <Column bindTo="company" />
-  <Column bindTo="email" />
-  <Column header="custom_notes" />
-</Table>
+      <Column bindTo="id" />
+      <Column bindTo="firstname" />
+      <Column bindTo="lastname" />
+      <Column bindTo="company" />
+      <Column bindTo="email" />
+      <Column header="custom_notes" />
+    </Table>
 
-<Text>Current selection (rows): [ { selection } ]</Text>
+  </Fragment>
 
- <Button backgroundColor="lightblue" label="Submit" onClick="updateHubspot()">
- </Button>
+  <Text>Current selection (rows): [ { selection } ]</Text>
 
- <APICall
-   id="updateTrigger"
-   headers="{headers}"
-   url="{baseUrl + urlProps}"
-   method="POST"
-   rawBody="{rawBody}"
- />
+  <Button backgroundColor="lightblue" label="Submit" onClick="updateHubspot()">
+  </Button>
 
- <ChangeListener
-   listenTo="{rawBody}"
-   onDidChange="{updateTrigger.execute()}"
- />
+  <APICall
+    id="updateTrigger"
+    headers="{headers}"
+    url="{baseUrl + urlProps}"
+    method="POST"
+    rawBody="{rawBody}"
+  />
 
-<ContentSeparator size="8px" />
+  <ChangeListener
+    listenTo="{rawBody}"
+    onDidChange="{updateTrigger.execute()}"
+  />
 
-<H2>Contacts in Hubspot</H2>
+  <ContentSeparator size="8px" />
+
+  <H2>Contacts in Hubspot</H2>
 
 <DataSource
   id="contactsFromHubspot"
@@ -73,12 +78,26 @@
   headers="{headers}"
  />
 
-<Table title="HubSpot contacts" data="{ contactsFromHubspot }">
-  <Column bindTo="firstname" />
-  <Column bindTo="lastname" />
-  <Column bindTo="company" />
-  <Column bindTo="email" />
-  <Column bindTo="custom_notes" />
-</Table>
+  <Table title="HubSpot contacts" data="{ contactsFromHubspot }">
+    <Column bindTo="firstname" />
+    <Column bindTo="lastname" />
+    <Column bindTo="company" />
+    <Column bindTo="email" />
+    <Column bindTo="custom_notes" />
+  </Table>
 
 </App>
+
+<!--
+<Theme
+  themeId="xmlui-orange"
+  >
+<Markdown>
+<![CDATA[
+hello
+> blockquote
+world
+]]>
+</Markdown>
+</Theme>
+-->
