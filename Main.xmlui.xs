@@ -1,4 +1,5 @@
 function updateHubspot() {
+    console.log('update')
     const parsedSelection = JSON.parse('[' + selection + ']') // why necessary to wrap brackets? it initially had them.
     let rawBodyObj = {}
     parsedSelection.forEach((item) => {

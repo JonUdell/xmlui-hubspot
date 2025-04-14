@@ -4,51 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="xmlui/0.8.5-csv-loader.js"></script>
-    <script>
-
-    async function sendToHubspot(data) {
-        console.log('sendToHubspot')
-        const hubspotToken = 'pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83'
-        const url = "http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts";
-
-        for (const contact of data) {
-            if (contact["Send to HubSpot"]) {
-                const payload = {
-                    properties: {
-                        firstname: contact.firstname,
-                        lastname: contact.lastname,
-                        company: contact.company,
-                        email: contact.email,
-                        custom_notes: contact.custom_notes || ""
-                    }
-                }
-
-                try {
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${hubspotToken}`,
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        console.error(`Error sending contact ${contact.email}:`, await response.text());
-                    } else {
-                        console.log(`Successfully sent contact ${contact.email}`);
-                    }
-                } catch (error) {
-                    console.error(`Network error for ${contact.email}:`, error);
-                }
-            }
-        }
-        location.reload()
-    }
-
-
-    </script>
+    <script src="xmlui/0.9.11.js"></script>
 </head>
 
 <body>

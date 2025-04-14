@@ -6,11 +6,11 @@
   var.baseUrl="http://hn.jonudell.info/xmlui-hubspot/proxy/api.hubapi.com/crm/v3/objects/contacts"
   var.urlProps="?properties=firstname,lastname,email,company,custom_notes"
   var.headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83", "content-type":"application/json" }}'
-  var.rawBody="initial"
+  var.newContacts=""
+  var.sendContact=""
 >
 
   <H1>Trade-show scans to HubSpot </H1>
-
 
   <Text>Start by choosing the CSV file you got from the scan service.</Text>
 
@@ -31,28 +31,41 @@
       url="{filename}"
       transformResult="{(data) => data.map((row, index) => ({...row, id: `${index}`}))}"
     />
+    <!-- ^ awkward way to ensure selectability -->
 
-    <Table
-      id="contactsFromCsv"
-      title="HubSpot contacts"
-      data="{ csv  }"
-      rowsSelectable="true"
-      onSelectionDidChange="(newSel) => selection = newSel.map(item => JSON.stringify(item)).join()"
-    >
-      <Column bindTo="id" />
-      <Column bindTo="firstname" />
-      <Column bindTo="lastname" />
-      <Column bindTo="company" />
-      <Column bindTo="email" />
-      <Column header="custom_notes" />
-    </Table>
+    <Form data="{[]}">
+
+      <property name="buttonRowTemplate">
+          <Button label="Reload" onClick="{filename = null}" />
+      </property>
+
+
+      <Table
+        id="contactsFromCsv"
+        title="HubSpot contacts"
+        data="{ csv  }"
+        rowsSelectable="true"
+        onSelectionDidChange="(selection) => {
+          newContacts = selection;
+          console.log(newContacts)
+        }"
+      >
+        <Column header="firstname">
+            <Text>{$item.firstname}</Text>
+        </Column>
+        <Column bindTo="lastname" />
+        <Column bindTo="company" />
+        <Column bindTo="email" />
+        <Column header="custom_notes" />
+      </Table>
+
+    </Form>
 
   </Fragment>
 
   <Text>Current selection (rows): [ { selection } ]</Text>
 
-  <Button backgroundColor="lightblue" label="Submit" onClick="updateHubspot()">
-  </Button>
+  <Button label="Submit" onClick="{ console.log('click') }" />
 
   <APICall
     id="updateTrigger"
@@ -71,12 +84,12 @@
 
   <H2>Contacts in Hubspot</H2>
 
-<DataSource
-  id="contactsFromHubspot"
-  resultSelector="results.map(item => item.properties )"
-  url="{baseUrl + urlProps}"
-  headers="{headers}"
- />
+  <DataSource
+    id="contactsFromHubspot"
+    resultSelector="results.map(item => item.properties )"
+    url="{baseUrl + urlProps}"
+    headers="{headers}"
+  />
 
   <Table title="HubSpot contacts" data="{ contactsFromHubspot }">
     <Column bindTo="firstname" />
