@@ -20,6 +20,7 @@
       onDidChange="{ (val) => filename = val[0]?.name; contactsFromCsv.clearSelection() }" />
 
     <Text value="file: {filename}" />
+    <Text>New contacts: { JSON.stringify(newContacts) } </Text>
 
   </Stack>
 
@@ -37,7 +38,7 @@
       id="newContactsForm"
       data="{ [] }"
       onSubmit="sendToHubspot()"
-      onCancel="{ newContacts = '' }"
+      onCancel="{ filename = ''; newContacts = '' }"
     >
 
     <!--
@@ -69,13 +70,12 @@
 
   </Fragment>
 
-  <Text>New contacts: { JSON.stringify(newContacts) } </Text>
-
   <APICall
     id="sendContact"
     headers="{headers}"
     url="{baseUrl + urlProps}"
     method="POST"
+    onSuccess="processNextContact()"
     rawBody="{JSON.stringify(contactToSend)}"
   />
 
