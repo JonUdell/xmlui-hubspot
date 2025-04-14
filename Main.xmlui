@@ -33,12 +33,21 @@
     />
     <!-- ^ awkward way to ensure selectability -->
 
-    <Form data="{[]}">
+    <Form
+      id="newContactsForm"
+      data="{ [] }"
+      onSubmit="sendToHubspot()"
+      onCancel="{ newContacts = '' }"
+    >
 
-      <property name="buttonRowTemplate">
-          <Button label="Reload" onClick="{filename = null}" />
-      </property>
-
+    <!--
+    <property name="buttonRowTemplate">
+      <HStack gap="0.5rem" borderTop="1px solid #ddd" paddingVertical="1rem">
+        <Button label="Reset" />
+        <Button label="Send to Hubspot"/>
+      </HStack>
+    </property>
+    -->
 
       <Table
         id="contactsFromCsv"
@@ -47,12 +56,9 @@
         rowsSelectable="true"
         onSelectionDidChange="(selection) => {
           newContacts = selection;
-          console.log(newContacts)
         }"
       >
-        <Column header="firstname">
-            <Text>{$item.firstname}</Text>
-        </Column>
+        <Column bindTo="firstname" />
         <Column bindTo="lastname" />
         <Column bindTo="company" />
         <Column bindTo="email" />
@@ -63,9 +69,7 @@
 
   </Fragment>
 
-  <Text>Current selection (rows): [ { selection } ]</Text>
-
-  <Button label="Submit" onClick="{ console.log('click') }" />
+  <Text>New contacts: { JSON.stringify(newContacts) } </Text>
 
   <APICall
     id="updateTrigger"
