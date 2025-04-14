@@ -20,7 +20,7 @@
       onDidChange="{ (val) => filename = val[0]?.name; contactsFromCsv.clearSelection() }" />
 
     <Text value="file: {filename}" />
-    <Text>New contacts: { JSON.stringify(newContacts) } </Text>
+    <Text preserveLinebreaks="true">New contacts: { JSON.stringify(newContacts, null, 2) } </Text>
 
   </Stack>
 
@@ -43,7 +43,7 @@
 
     <!--
     <property name="buttonRowTemplate">
-      <HStack gap="0.5rem" borderTop="1px solid #ddd" paddingVertical="1rem">
+      <HStack>
         <Button label="Reset" />
         <Button label="Send to Hubspot"/>
       </HStack>
@@ -63,7 +63,15 @@
         <Column bindTo="lastname" />
         <Column bindTo="company" />
         <Column bindTo="email" />
-        <Column header="custom_notes" />
+        <Column header="custom_notes">
+          <TextBox
+            id="note"
+            onDidChange="(value) => {
+              console.log('item', $item)
+              // $item.notes = value // cannot update readonly variable
+          }"
+        />
+        </Column>
       </Table>
 
     </Form>
@@ -105,16 +113,3 @@
 
 </App>
 
-<!--
-<Theme
-  themeId="xmlui-orange"
-  >
-<Markdown>
-<![CDATA[
-hello
-> blockquote
-world
-]]>
-</Markdown>
-</Theme>
--->

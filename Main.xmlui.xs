@@ -8,7 +8,7 @@ function sendToHubspot() {
                 "lastname": contact.lastname,
                 "company": contact.company,
                 "email": contact.email,
-                "custom_notes": contact.custom_notes,
+                "custom_notes": contact.notes,
             }
         }
         console.log('sending', contactToSend)
