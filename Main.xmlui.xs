@@ -1,5 +1,6 @@
 function sendToHubspot() {
     newContacts.forEach( (contact) => {
-        console.log('sending', contact)
+        contactToSend = contact
+        console.log('sending', contactToSend)
     })
 }

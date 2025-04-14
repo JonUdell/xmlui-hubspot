@@ -7,7 +7,7 @@
   var.urlProps="?properties=firstname,lastname,email,company,custom_notes"
   var.headers='{{"Authorization":"Bearer pat-na1-0ceabe07-2a65-4bb5-a1eb-78e8362fca83", "content-type":"application/json" }}'
   var.newContacts=""
-  var.sendContact=""
+  var.contactToSend=""
 >
 
   <H1>Trade-show scans to HubSpot </H1>
@@ -72,16 +72,16 @@
   <Text>New contacts: { JSON.stringify(newContacts) } </Text>
 
   <APICall
-    id="updateTrigger"
+    id="sendContact"
     headers="{headers}"
     url="{baseUrl + urlProps}"
     method="POST"
-    rawBody="{rawBody}"
+    rawBody="{JSON.stringify(contactToSend)}"
   />
 
   <ChangeListener
-    listenTo="{rawBody}"
-    onDidChange="{updateTrigger.execute()}"
+    listenTo="{contactToSend}"
+    onDidChange="{sendContact.execute()}"
   />
 
   <ContentSeparator size="8px" />
