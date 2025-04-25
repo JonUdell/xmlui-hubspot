@@ -2,16 +2,20 @@ function sendToHubspot() {
     // Process only the first contact in the current batch
     if (newContacts.length > 0) {
         const contact = newContacts[0];
-        contactToSend = {
-            "properties": {
-                "firstname": contact.firstname,
-                "lastname": contact.lastname,
-                "company": contact.company,
-                "email": contact.email,
-                "custom_notes": contact.notes,
+        console.log('Contact data:', contact);
+
+        contactToSend = JSON.stringify({
+            properties: {
+                firstname: contact.firstname,
+                lastname: contact.lastname,
+                company: contact.company,
+                email: contact.email,
+                custom_notes: contact.custom_notes || ""
             }
-        }
-        console.log('sending', contactToSend)
+        });
+
+        console.log('Sending to HubSpot:', contactToSend);
+        console.log('Contact string type:', typeof contactToSend);
 
         // Remove the first contact from the newContacts array
         // We need to create a new array to trigger reactivity

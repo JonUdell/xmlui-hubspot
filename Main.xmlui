@@ -66,10 +66,15 @@
         <Column header="custom_notes">
           <TextBox
             id="note"
+            value="{$item.custom_notes}"
             onDidChange="(value) => {
-              console.log('item', $item)
-              // $item.notes = value // cannot update readonly variable
-          }"
+              const updatedContacts = [...newContacts];
+              const index = updatedContacts.findIndex(c => c.id === $item.id);
+              if (index >= 0) {
+                updatedContacts[index] = {...updatedContacts[index], custom_notes: value};
+                newContacts = updatedContacts;
+              }
+            }"
         />
         </Column>
       </Table>
@@ -81,15 +86,19 @@
   <APICall
     id="sendContact"
     headers="{headers}"
-    url="{baseUrl + urlProps}"
+    url="{baseUrl}"
     method="POST"
     onSuccess="processNextContact()"
-    rawBody="{JSON.stringify(contactToSend)}"
+    onError="(error) => console.error('API Error:', error)"
+    rawBody="{contactToSend}"
   />
 
   <ChangeListener
     listenTo="{contactToSend}"
-    onDidChange="{sendContact.execute()}"
+    onDidChange="{() => {
+      console.log('Request payload:', contactToSend);
+      sendContact.execute();
+    }}"
   />
 
   <ContentSeparator size="8px" />
@@ -112,4 +121,3 @@
   </Table>
 
 </App>
-
