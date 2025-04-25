@@ -19,8 +19,10 @@
     <FileInput id="fileInput" acceptsFileType="{['.csv']}"
       onDidChange="{ (val) => filename = val[0]?.name; contactsFromCsv.clearSelection() }" />
 
+<!--
     <Text value="file: {filename}" />
     <Text preserveLinebreaks="true">New contacts: { JSON.stringify(newContacts, null, 2) } </Text>
+-->
 
   </Stack>
 
@@ -41,15 +43,6 @@
       onCancel="{ filename = ''; newContacts = '' }"
     >
 
-    <!--
-    <property name="buttonRowTemplate">
-      <HStack>
-        <Button label="Reset" />
-        <Button label="Send to Hubspot"/>
-      </HStack>
-    </property>
-    -->
-
       <Table
         id="contactsFromCsv"
         title="HubSpot contacts"
@@ -64,18 +57,25 @@
         <Column bindTo="company" />
         <Column bindTo="email" />
         <Column header="custom_notes">
-          <TextBox
-            id="note"
-            value="{$item.custom_notes}"
-            onDidChange="(value) => {
-              const updatedContacts = [...newContacts];
-              const index = updatedContacts.findIndex(c => c.id === $item.id);
-              if (index >= 0) {
-                updatedContacts[index] = {...updatedContacts[index], custom_notes: value};
-                newContacts = updatedContacts;
-              }
-            }"
-        />
+          <VStack>
+            <TextBox
+              id="note"
+              value="{$item.custom_notes || $item.notes || ''}"
+              onDidChange="(value) => {
+                // TODO: This is a workaround - we need a better pattern for updating values in table cells.
+                // The current approach requires manually finding the item in the array, making a copy,
+                // updating the copy, and reassigning the entire array to trigger reactivity.
+                // A more direct binding mechanism for editable table cells would be preferable.
+                const updatedContacts = [...newContacts];
+                const index = updatedContacts.findIndex(c => c.id === $item.id);
+                if (index >= 0) {
+                  updatedContacts[index] = {...updatedContacts[index], custom_notes: value};
+                  newContacts = updatedContacts;
+                  console.log('Updated contact with note:', updatedContacts[index]);
+                }
+              }"
+            />
+          </VStack>
         </Column>
       </Table>
 

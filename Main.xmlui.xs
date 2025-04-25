@@ -3,6 +3,9 @@ function sendToHubspot() {
     if (newContacts.length > 0) {
         const contact = newContacts[0];
         console.log('Contact data:', contact);
+        console.log('Custom notes value:', contact.custom_notes);
+        console.log('Contact keys:', Object.keys(contact));
+        console.log('All contact properties:', JSON.stringify(contact, null, 2));
 
         contactToSend = JSON.stringify({
             properties: {
